@@ -117,6 +117,44 @@ describe("handleCommands gating", () => {
   });
 });
 
+describe("/plans", () => {
+  it("lists plan directories", async () => {
+    const cfg = {
+      commands: { text: true },
+      whatsapp: { allowFrom: ["*"] },
+    } as ClawdbotConfig;
+
+    const plansDir = path.join(testWorkspaceDir, "plans");
+    await fs.mkdir(path.join(plansDir, "2026-01-24-trip"), { recursive: true });
+    await fs.writeFile(
+      path.join(plansDir, "2026-01-24-trip", "plan.md"),
+      "# Trip Plan\n\nDo stuff\n",
+      "utf-8",
+    );
+
+    const params = buildParams("/plans list", cfg);
+    const result = await handleCommands(params);
+    expect(result.shouldContinue).toBe(false);
+    expect(result.reply?.text).toContain("2026-01-24-trip");
+  });
+
+  it("shows plan.md", async () => {
+    const cfg = {
+      commands: { text: true },
+      whatsapp: { allowFrom: ["*"] },
+    } as ClawdbotConfig;
+
+    const plansDir = path.join(testWorkspaceDir, "plans");
+    await fs.mkdir(path.join(plansDir, "demo"), { recursive: true });
+    await fs.writeFile(path.join(plansDir, "demo", "plan.md"), "Hello plan", "utf-8");
+
+    const params = buildParams("/plans show demo", cfg);
+    const result = await handleCommands(params);
+    expect(result.shouldContinue).toBe(false);
+    expect(result.reply?.text).toContain("Hello plan");
+  });
+});
+
 describe("handleCommands bash alias", () => {
   it("routes !poll through the /bash handler", async () => {
     resetBashChatCommandForTests();
