@@ -1,7 +1,36 @@
 FROM node:22-bookworm@sha256:cd7bcd2e7a1e6f72052feb023c7f6b722205d3fcab7bbcbd2d1bfdab10b1e935
 
 # Install Bun (required for build scripts)
-RUN curl -fsSL https://bun.sh/install | bash
+# RUN curl -fsSL https://bun.sh/install | bash
+
+# Guide for docker setup
+# cat .openclaw/openclaw.json
+# Grab token and paste into control ui
+# # run the following command to list the device
+# docker compose exec -T \
+#   -e OPENCLAW_GATEWAY_TOKEN=<token> \
+#   openclaw-gateway \
+#   node dist/index.js devices list
+# # Then approve the device
+# docker compose exec -T \
+#   -e OPENCLAW_GATEWAY_TOKEN=<token> \
+#   openclaw-gateway \
+#   node dist/index.js devices approve <REQUEST_ID>
+
+# Install Bun from vendored zip (no network needed here)
+COPY bun-linux-x64.zip /tmp/bun-linux-x64.zip
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends unzip \
+  && mkdir -p /root/.bun/bin \
+  && unzip /tmp/bun-linux-x64.zip -d /tmp/bun \
+  && mv /tmp/bun/bun-linux-x64/bun /root/.bun/bin/bun \
+  && chmod +x /root/.bun/bin/bun \
+  && rm -rf /tmp/bun /tmp/bun-linux-x64.zip \
+  && apt-get purge -y unzip \
+  && apt-get autoremove -y \
+  && rm -rf /var/lib/apt/lists/*
+  
 ENV PATH="/root/.bun/bin:${PATH}"
 
 RUN corepack enable
