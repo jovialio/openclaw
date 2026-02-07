@@ -1,4 +1,8 @@
 services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
   openclaw-gateway:
     image: ${OPENCLAW_IMAGE:-openclaw:local}
     environment:
@@ -8,17 +12,23 @@ services:
       CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY}
       CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY}
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
     volumes:
       - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
       - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+      - "3000:3000"
     init: true
     restart: unless-stopped
     entrypoint: ["/home/node/.openclaw/workspace/for_openclaw/investment-portfolio-saas/scripts/container-entrypoint-watchers.sh"]
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      - redis
     command:
       [
         "node",
