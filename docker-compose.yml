@@ -16,6 +16,7 @@ services:
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
     init: true
     restart: unless-stopped
+    entrypoint: ["/home/node/.openclaw/workspace/for_openclaw/investment-portfolio-saas/scripts/container-entrypoint-watchers.sh"]
     command:
       [
         "node",

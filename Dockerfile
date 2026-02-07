@@ -75,7 +75,8 @@ RUN apt-get update \
   
 ENV PATH="/root/.bun/bin:${PATH}"
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@10.28.2 --activate
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
 WORKDIR /app
 RUN chown node:node /app
@@ -133,6 +134,8 @@ ENV NODE_ENV=production
 # The node:22-bookworm image includes a 'node' user (uid 1000)
 # This reduces the attack surface by preventing container escape via root privileges
 USER node
+
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
 # Start gateway server with default config.
 # Binds to loopback (127.0.0.1) by default for security.
