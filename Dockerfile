@@ -26,6 +26,8 @@ FROM node:22-bookworm@sha256:cd7bcd2e7a1e6f72052feb023c7f6b722205d3fcab7bbcbd2d1
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       ca-certificates \
+      vim \
+      nano \
       curl \
       git \
       jq \
@@ -44,10 +46,18 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-# Install uv and uvx
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
- && install -m 0755 /root/.local/bin/uv /usr/local/bin/uv \
- && install -m 0755 /root/.local/bin/uvx /usr/local/bin/uvx
+# Vendor uv release asset in repo
+COPY uv-x86_64-unknown-linux-gnu.tar /tmp/uv.tar
+
+RUN set -eux; \
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates; \
+    mkdir -p /tmp/uv; \
+    tar -xf /tmp/uv.tar -C /tmp/uv; \
+    install -m 0755 /tmp/uv/uv-x86_64-unknown-linux-gnu/uv  /usr/local/bin/uv; \
+    install -m 0755 /tmp/uv/uv-x86_64-unknown-linux-gnu/uvx /usr/local/bin/uvx; \
+    rm -rf /tmp/uv /tmp/uv.tar; \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Bun from vendored zip (no network needed here)
 COPY bun-linux-x64.zip /tmp/bun-linux-x64.zip
