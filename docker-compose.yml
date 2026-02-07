@@ -17,6 +17,8 @@ services:
     init: true
     restart: unless-stopped
     entrypoint: ["/home/node/.openclaw/workspace/for_openclaw/investment-portfolio-saas/scripts/container-entrypoint-watchers.sh"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command:
       [
         "node",
