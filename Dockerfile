@@ -26,25 +26,44 @@ FROM node:22-bookworm@sha256:cd7bcd2e7a1e6f72052feb023c7f6b722205d3fcab7bbcbd2d1
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       ca-certificates \
+      wget \
       vim \
       nano \
       curl \
       git \
       jq \
       rsync \
+      ripgrep \
+      fd-find \
+      less \
+      tree \
       tmux \
       unzip \
       zip \
       procps \
       lsof \
+      strace \
+      httpie \
+      postgresql-client \
+      sqlite3 \
+      gh \
+      git-lfs \
       netcat-openbsd \
       python3 \
       python3-pip \
       python3-venv \
       redis-server \
       build-essential \
+      chromium \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+    
+# Install mikefarah/yq (preferred yq)
+# COPY yq_linux_amd64 /usr/local/bin/yq
+# RUN chmod +x /usr/local/bin/yq
+
+# Debian/Ubuntu: fd-find provides `fdfind`; add `fd` alias for convenience
+# RUN ln -sf "$(command -v fdfind)" /usr/local/bin/fd; 
 
 # Vendor uv release asset in repo
 COPY uv-x86_64-unknown-linux-gnu.tar /tmp/uv.tar
@@ -69,7 +88,6 @@ RUN apt-get update \
   && mv /tmp/bun/bun-linux-x64/bun /root/.bun/bin/bun \
   && chmod +x /root/.bun/bin/bun \
   && rm -rf /tmp/bun /tmp/bun-linux-x64.zip \
-  && apt-get purge -y unzip \
   && apt-get autoremove -y \
   && rm -rf /var/lib/apt/lists/*
   
