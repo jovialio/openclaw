@@ -94,6 +94,8 @@ RUN apt-get update \
   
 ENV PATH="/root/.bun/bin:${PATH}"
 
+RUN npm i -g @openai/codex
+
 RUN corepack enable && corepack prepare pnpm@10.28.2 --activate
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
