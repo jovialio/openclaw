@@ -15,6 +15,7 @@ services:
       JIRA_API_TOKEN: ${JIRA_API_TOKEN}
       GMAIL_ACCOUNT: ${GMAIL_ACCOUNT}
       GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD}
+      EMAIL_ALLOWED_RECIPIENTS: ${EMAIL_ALLOWED_RECIPIENTS}
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
@@ -30,7 +31,7 @@ services:
       - "3000:3000"
     init: true
     restart: unless-stopped
-    entrypoint: ["/home/node/.openclaw/workspace/for_openclaw/investment-portfolio-saas/scripts/container-entrypoint-watchers.sh"]
+    #entrypoint: ["/home/node/.openclaw/workspace/for_openclaw/investment-portfolio-saas/scripts/container-entrypoint-watchers.sh"]
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
