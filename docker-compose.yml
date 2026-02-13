@@ -28,7 +28,8 @@ services:
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:8000:8000"
     init: true
     restart: unless-stopped
     #entrypoint: ["/home/node/.openclaw/workspace/for_openclaw/investment-portfolio-saas/scripts/container-entrypoint-watchers.sh"]
