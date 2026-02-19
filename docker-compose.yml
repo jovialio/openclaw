@@ -27,11 +27,16 @@ services:
       - /home/dennis/.openclaw/playwright-browsers:/home/node/.cache/ms-playwright
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker:ro
+      - /home/dennis/.config/gh:/home/node/.config/gh 
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
-      - "127.0.0.1:3000:3000"
-      - "127.0.0.1:8000:8000"
+      #- "127.0.0.1:3000:3000"
+      #- "127.0.0.1:8000:8000"
+      - "10.8.0.2:3000:3000"
+      - "10.8.0.2:8000:8000"
+      - "10.8.0.2:5173:5173"
+      - "10.8.0.2:8080:8080"
     init: true
     restart: unless-stopped
     #entrypoint: ["/home/node/.openclaw/workspace/for_openclaw/investment-portfolio-saas/scripts/container-entrypoint-watchers.sh"]
